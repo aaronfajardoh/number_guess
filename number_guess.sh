@@ -25,6 +25,8 @@ else
   echo -e "\nGuess the secret number between 1 and 1000:"
   #read user input 
   read GUESS
+  NUM_GUESSES=1
+
   if ! [[ $GUESS =~ ^[0-9]+$ ]]
   then
     echo -e "\nThat is not an integer, guess again:"
@@ -34,20 +36,19 @@ else
       if [[ $GUESS -gt $RANDOM_NUMBER ]]
       then
         echo -e "\nIt's lower than that, guess again:"
-      #if it's inferior print something and viceversa
-        read GUESS
       elif [[ $GUESS -lt $RANDOM_NUMBER ]]
       then
         echo -e "\nIt's higher than that, guess again:"
-      #add to number of tries in table 
-        read GUESS
       fi
+      read GUESS
+      ((NUM_GUESSES++))
     done
       #congratulate
-      echo "woohoo"
+    echo "woohoo"
+    $PSQL "UPDATE users SET games_played = games_played + 1 WHERE user_id = $USER_ID;"
+    $PSQL "UPDATE users SET best_game = $NUM_GUESSES WHERE user_id = $USER_ID AND (best_game IS NULL OR best_game > $NUM_GUESSES);"
       #conclude game
-      #calculate best_game
-    fi
+
   fi
 fi
 
