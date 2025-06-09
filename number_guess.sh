@@ -20,11 +20,35 @@ else
   BEST_GAME=$($PSQL "SELECT best_game FROM users WHERE user_id = $USER_ID")
   echo -e "\nWelcome back, '$USERNAME'! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
 #generate random number
-  RANDOM_NUMBER=
+  RANDOM_NUMBER=$(( RANDOM % 1000 + 1 ))
 #print "guess the secret number"
-#read user input 
-#add to number of tries in table 
-#if number is higher or lower print number
+  echo -e "\nGuess the secret number between 1 and 1000:"
+  #read user input 
+  read GUESS
+  if ! [[ $GUESS =~ ^[0-9]+$ ]]
+  then
+    echo -e "\nThat is not an integer, guess again:"
+  else
+    while [[ $GUESS -ne $RANDOM_NUMBER ]]
+    do
+      if [[ $GUESS -gt $RANDOM_NUMBER ]]
+      then
+        echo -e "\nIt's lower than that, guess again:"
+      #if it's inferior print something and viceversa
+        read GUESS
+      elif [[ $GUESS -lt $RANDOM_NUMBER ]]
+      then
+        echo -e "\nIt's higher than that, guess again:"
+      #add to number of tries in table 
+        read GUESS
+      fi
+    done
+      #congratulate
+      echo "woohoo"
+      #conclude game
+      #calculate best_game
+    fi
+  fi
 fi
 
 
